@@ -1,0 +1,8 @@
+Welcome msg
+Home //
+LogOut //
+Register //
+Nav //
+Update
+
+check if logged in in register && login page if so redirect //

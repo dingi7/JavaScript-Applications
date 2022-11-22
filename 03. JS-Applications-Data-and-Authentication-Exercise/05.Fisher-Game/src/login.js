@@ -1,0 +1,40 @@
+const logInForm = document.getElementsByTagName("form")[0];
+const notification = document.getElementsByClassName("notification")[0];
+
+window.addEventListener("load", ()=>{
+    document.getElementById("home").classList.remove("active")
+    document.getElementById("login").classList.add("active")
+})
+
+
+logInForm.addEventListener("submit", logIn);
+
+async function logIn(e) {
+    let formData = new FormData(logInForm);
+    let { email, password } = Object.fromEntries(formData.entries());
+    e.preventDefault();
+    notification.textContent = ""
+    try {
+      if (!email || !password) {
+        throw new Error("All fields are required!");
+      }
+      const response = await fetch(`http://localhost:3030/users/login`, {
+        method: "post",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Unauthorized!");
+      }
+      const data = await response.json();
+      sessionStorage.setItem("authToken", data.accessToken);
+      sessionStorage.setItem("userId", data._id);
+      sessionStorage.setItem("email", email);
+      window.location = `./index.html`;
+    } catch (e) {
+      notification.textContent = e.message;
+      logInForm.reset();
+    }
+  }
